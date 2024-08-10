@@ -324,8 +324,13 @@ typedef struct GCObject {
 #define LUA_VNUMFLT	makevariant(LUA_TNUMBER, 1)  /* float numbers */
 
 #define ttisnumber(o)		checktype((o), LUA_TNUMBER)
+#if LUA_NOFLOAT
+#define ttisfloat(o)		(0 == 1)
+#define ttisinteger(o)		(0 == 0)
+#else
 #define ttisfloat(o)		checktag((o), LUA_VNUMFLT)
 #define ttisinteger(o)		checktag((o), LUA_VNUMINT)
+#endif
 
 #define nvalue(o)	check_exp(ttisnumber(o), \
 	(ttisinteger(o) ? cast_num(ivalue(o)) : fltvalue(o)))

@@ -18,6 +18,8 @@
 
 #include "lua.h"
 
+#if LUA_NOFLOAT == 0
+
 #include "lauxlib.h"
 #include "lualib.h"
 
@@ -779,3 +781,4 @@ LUAMOD_API int luaopen_math (lua_State *L) {
   return 1;
 }
 
+#endif /* LUA_NOFLOAT */

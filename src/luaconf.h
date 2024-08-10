@@ -112,6 +112,8 @@
 #define LUA_FLOAT_FLOAT		1
 #define LUA_FLOAT_DOUBLE	2
 #define LUA_FLOAT_LONGDOUBLE	3
+/* jsd: new option to disable floats */
+#define LUA_FLOAT_INT	4
 
 
 /* Default configuration ('long long' and 'double', for 64-bit Lua) */
@@ -122,7 +124,13 @@
 /*
 @@ LUA_32BITS enables Lua with 32-bit integers and 32-bit floats.
 */
-#define LUA_32BITS	0
+#define LUA_32BITS	1
+
+
+/*
+@@ LUA_NOFLOAT disables floating point support if value is non-zero.
+*/
+#define LUA_NOFLOAT	1
 
 
 /*
@@ -146,20 +154,32 @@
 #else  /* otherwise use 'long' */
 #define LUA_INT_TYPE	LUA_INT_LONG
 #endif
+#if LUA_NOFLOAT
+#define LUA_FLOAT_TYPE	LUA_FLOAT_INT
+#else
 #define LUA_FLOAT_TYPE	LUA_FLOAT_FLOAT
+#endif
 
 #elif LUA_C89_NUMBERS	/* }{ */
 /*
 ** largest types available for C89 ('long' and 'double')
 */
 #define LUA_INT_TYPE	LUA_INT_LONG
+#if LUA_NOFLOAT
+#define LUA_FLOAT_TYPE	LUA_FLOAT_INT
+#else
 #define LUA_FLOAT_TYPE	LUA_FLOAT_DOUBLE
+#endif
 
 #else		/* }{ */
 /* use defaults */
 
 #define LUA_INT_TYPE	LUA_INT_DEFAULT
+#if LUA_NOFLOAT
+#define LUA_FLOAT_TYPE	LUA_FLOAT_INT
+#else
 #define LUA_FLOAT_TYPE	LUA_FLOAT_DEFAULT
+#endif
 
 #endif				/* } */
 
@@ -483,6 +503,21 @@
 
 #define lua_str2number(s,p)	strtod((s), (p))
 
+#elif LUA_FLOAT_TYPE == LUA_FLOAT_INT	/* }{ int */
+
+#define LUA_NUMBER	LUA_INTEGER
+
+#define l_floatatt(n)		(0)	/* TODO */
+
+#define LUAI_UACNUMBER	LUA_INTEGER
+
+#define LUA_NUMBER_FRMLEN	""
+#define LUA_NUMBER_FMT		LUA_INTEGER_FMT
+
+#define l_mathop(op)		op
+
+#define lua_str2number(s,p)	strtol((s), (p), 10)
+
 #else						/* }{ */
 
 #error "numeric float type not defined"
@@ -625,8 +660,13 @@
 ** provide its own implementation.
 */
 #if !defined(LUA_USE_C89)
+#if LUA_NOFLOAT
+#define lua_number2strx(L,b,sz,f,n)  \
+	((void)L, l_sprintf(b,sz,"%x",(LUAI_UACINT)(n)))
+#else
 #define lua_number2strx(L,b,sz,f,n)  \
 	((void)L, l_sprintf(b,sz,f,(LUAI_UACNUMBER)(n)))
+#endif
 #endif
 
 
