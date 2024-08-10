@@ -128,9 +128,27 @@
 
 
 /*
-@@ LUA_NOFLOAT disables floating point support if value is non-zero.
+@@ LUA_ENABLE_FLOAT enables floating point support if value is non-zero.
 */
-#define LUA_NOFLOAT	1
+#define LUA_ENABLE_FLOAT	0
+
+
+/*
+@@ LUA_ENABLE_LOAD enables lua `load()`, `loadfile()`, `dofile()` functions if value is non-zero.
+*/
+#define LUA_ENABLE_LOAD	0
+
+
+/*
+@@ LUA_ENABLE_LIB_IO enables lua `io` base library if value is non-zero.
+*/
+#define LUA_ENABLE_LIB_IO	0
+
+
+/*
+@@ LUA_ENABLE_LIB_OS enables lua `os` base library if value is non-zero.
+*/
+#define LUA_ENABLE_LIB_OS	0
 
 
 /*
@@ -154,10 +172,10 @@
 #else  /* otherwise use 'long' */
 #define LUA_INT_TYPE	LUA_INT_LONG
 #endif
-#if LUA_NOFLOAT
-#define LUA_FLOAT_TYPE	LUA_FLOAT_INT
-#else
+#if LUA_ENABLE_FLOAT
 #define LUA_FLOAT_TYPE	LUA_FLOAT_FLOAT
+#else
+#define LUA_FLOAT_TYPE	LUA_FLOAT_INT
 #endif
 
 #elif LUA_C89_NUMBERS	/* }{ */
@@ -165,20 +183,20 @@
 ** largest types available for C89 ('long' and 'double')
 */
 #define LUA_INT_TYPE	LUA_INT_LONG
-#if LUA_NOFLOAT
-#define LUA_FLOAT_TYPE	LUA_FLOAT_INT
-#else
+#if LUA_ENABLE_FLOAT
 #define LUA_FLOAT_TYPE	LUA_FLOAT_DOUBLE
+#else
+#define LUA_FLOAT_TYPE	LUA_FLOAT_INT
 #endif
 
 #else		/* }{ */
 /* use defaults */
 
 #define LUA_INT_TYPE	LUA_INT_DEFAULT
-#if LUA_NOFLOAT
-#define LUA_FLOAT_TYPE	LUA_FLOAT_INT
-#else
+#if LUA_ENABLE_FLOAT
 #define LUA_FLOAT_TYPE	LUA_FLOAT_DEFAULT
+#else
+#define LUA_FLOAT_TYPE	LUA_FLOAT_INT
 #endif
 
 #endif				/* } */
@@ -660,12 +678,12 @@
 ** provide its own implementation.
 */
 #if !defined(LUA_USE_C89)
-#if LUA_NOFLOAT
-#define lua_number2strx(L,b,sz,f,n)  \
-	((void)L, l_sprintf(b,sz,"%x",(LUAI_UACINT)(n)))
-#else
+#if LUA_ENABLE_FLOAT
 #define lua_number2strx(L,b,sz,f,n)  \
 	((void)L, l_sprintf(b,sz,f,(LUAI_UACNUMBER)(n)))
+#else
+#define lua_number2strx(L,b,sz,f,n)  \
+	((void)L, l_sprintf(b,sz,"%x",(LUAI_UACINT)(n)))
 #endif
 #endif
 

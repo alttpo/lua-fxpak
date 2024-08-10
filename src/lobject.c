@@ -235,6 +235,7 @@ static const char *l_str2dloc (const char *s, lua_Number *result, int mode) {
 }
 
 
+#if LUA_ENABLE_FLOAT
 /*
 ** Convert string 's' to a Lua number (put in 'result') handling the
 ** current locale.
@@ -268,7 +269,7 @@ static const char *l_str2d (const char *s, lua_Number *result) {
   }
   return endptr;
 }
-
+#endif
 
 #define MAXBY10		cast(lua_Unsigned, LUA_MAXINTEGER / 10)
 #define MAXLASTD	cast_int(LUA_MAXINTEGER % 10)
@@ -311,9 +312,11 @@ size_t luaO_str2num (const char *s, TValue *o) {
   if ((e = l_str2int(s, &i)) != NULL) {  /* try as an integer */
     setivalue(o, i);
   }
+#if LUA_ENABLE_FLOAT
   else if ((e = l_str2d(s, &n)) != NULL) {  /* else try as a float */
     setfltvalue(o, n);
   }
+#endif
   else
     return 0;  /* conversion failed */
   return (e - s) + 1;  /* success; return string size */
