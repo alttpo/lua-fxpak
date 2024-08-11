@@ -9,7 +9,7 @@ PLAT= guess
 CC= gcc -std=gnu99
 #CFLAGS= -O2 -Wall -Wextra -DLUA_COMPAT_5_3 $(SYSCFLAGS) $(MYCFLAGS)
 #CFLAGS= -g -Wall -Wextra $(SYSCFLAGS) $(MYCFLAGS)
-CFLAGS= -O2 -Wall -Wextra $(SYSCFLAGS) $(MYCFLAGS)
+CFLAGS= -Wall -Wextra $(SYSCFLAGS) $(MYCFLAGS)
 LDFLAGS= $(SYSLDFLAGS) $(MYLDFLAGS)
 LIBS= -lm $(SYSLIBS) $(MYLIBS)
 
@@ -116,6 +116,9 @@ c89:
 
 FreeBSD NetBSD OpenBSD freebsd:
 	$(MAKE) $(ALL) SYSCFLAGS="-DLUA_USE_LINUX -DLUA_USE_READLINE -I/usr/include/edit" SYSLIBS="-Wl,-E -ledit" CC="cc"
+
+fxpak:
+	$(MAKE) $(LUA_A) CC="arm-none-eabi-gcc" AR="arm-none-eabi-ar" RANLIB="arm-none-eabi-ranlib" SYSCFLAGS="-Os -ffunction-sections" SYSLDFLAGS=""
 
 generic: $(ALL)
 

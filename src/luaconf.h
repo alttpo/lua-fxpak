@@ -146,6 +146,12 @@
 
 
 /*
+@@ LUA_ENABLE_DUMP enables `lua_dump()` API function if value is non-zero.
+*/
+#define LUA_ENABLE_DUMP	0
+
+
+/*
 @@ LUA_ENABLE_LIB_PACKAGE enables lua 'package' base library if value is non-zero.
 */
 #define LUA_ENABLE_LIB_PACKAGE	0
@@ -155,6 +161,12 @@
 @@ LUA_ENABLE_LIB_COROUTINE enables lua 'coroutine' base library if value is non-zero.
 */
 #define LUA_ENABLE_LIB_COROUTINE	0
+
+
+/*
+@@ LUA_ENABLE_LIB_TABLE enables lua 'table' base library if value is non-zero.
+*/
+#define LUA_ENABLE_LIB_TABLE	0
 
 
 /*

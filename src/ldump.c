@@ -15,6 +15,8 @@
 
 #include "lua.h"
 
+#if LUA_ENABLE_DUMP
+
 #include "lobject.h"
 #include "lstate.h"
 #include "lundump.h"
@@ -230,3 +232,4 @@ int luaU_dump(lua_State *L, const Proto *f, lua_Writer w, void *data,
   return D.status;
 }
 
+#endif /* LUA_ENABLE_DUMP */

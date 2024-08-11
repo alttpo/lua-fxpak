@@ -47,7 +47,9 @@ static const luaL_Reg loadedlibs[] = {
 #if LUA_ENABLE_LIB_COROUTINE
   {LUA_COLIBNAME, luaopen_coroutine},
 #endif
+#if LUA_ENABLE_LIB_TABLE
   {LUA_TABLIBNAME, luaopen_table},
+#endif
 #if LUA_ENABLE_LIB_IO
   {LUA_IOLIBNAME, luaopen_io},
 #endif

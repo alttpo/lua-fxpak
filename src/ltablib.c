@@ -16,6 +16,8 @@
 
 #include "lua.h"
 
+#if LUA_ENABLE_LIB_TABLE
+
 #include "lauxlib.h"
 #include "lualib.h"
 
@@ -428,3 +430,4 @@ LUAMOD_API int luaopen_table (lua_State *L) {
   return 1;
 }
 
+#endif /* LUA_ENABLE_LIB_TABLE */
