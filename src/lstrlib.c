@@ -1142,6 +1142,7 @@ static void addquoted (luaL_Buffer *b, const char *s, size_t len) {
 }
 
 
+#if LUA_ENABLE_FLOAT
 /*
 ** Serialize a floating-point number in such a way that it can be
 ** scanned back by Lua. Use hexadecimal format for "common" numbers
@@ -1170,6 +1171,7 @@ static int quotefloat (lua_State *L, char *buff, lua_Number n) {
   /* for the fixed representations */
   return l_sprintf(buff, MAX_ITEM, "%s", s);
 }
+#endif
 
 
 static void addliteral (lua_State *L, luaL_Buffer *b, int arg) {
@@ -1183,9 +1185,12 @@ static void addliteral (lua_State *L, luaL_Buffer *b, int arg) {
     case LUA_TNUMBER: {
       char *buff = luaL_prepbuffsize(b, MAX_ITEM);
       int nb;
+#if LUA_ENABLE_FLOAT
       if (!lua_isinteger(L, arg))  /* float? */
         nb = quotefloat(L, buff, lua_tonumber(L, arg));
-      else {  /* integers */
+      else
+#endif
+      {  /* integers */
         lua_Integer n = lua_tointeger(L, arg);
         const char *format = (n == LUA_MININTEGER)  /* corner case? */
                            ? "0x%" LUA_INTEGER_FRMLEN "x"  /* use hex */

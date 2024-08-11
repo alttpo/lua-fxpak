@@ -672,6 +672,7 @@ static void luaH_newkey (lua_State *L, Table *t, const TValue *key,
   TValue aux;
   if (l_unlikely(ttisnil(key)))
     luaG_runerror(L, "table index is nil");
+#if LUA_ENABLE_FLOAT
   else if (ttisfloat(key)) {
     lua_Number f = fltvalue(key);
     lua_Integer k;
@@ -682,6 +683,7 @@ static void luaH_newkey (lua_State *L, Table *t, const TValue *key,
     else if (l_unlikely(luai_numisnan(f)))
       luaG_runerror(L, "table index is NaN");
   }
+#endif
   if (ttisnil(value))
     return;  /* do not insert nil values */
   mp = mainpositionTV(t, key);

@@ -137,9 +137,12 @@ int luaV_flttointeger (lua_Number n, lua_Integer *p, F2Imod mode) {
 ** ("Fast track" handled by macro 'tointegerns'.)
 */
 int luaV_tointegerns (const TValue *obj, lua_Integer *p, F2Imod mode) {
+#if LUA_ENABLE_FLOAT
   if (ttisfloat(obj))
     return luaV_flttointeger(fltvalue(obj), p, mode);
-  else if (ttisinteger(obj)) {
+  else
+#endif
+  if (ttisinteger(obj)) {
     *p = ivalue(obj);
     return 1;
   }
@@ -483,9 +486,12 @@ l_sinline int LTnum (const TValue *l, const TValue *r) {
     lua_Integer li = ivalue(l);
     if (ttisinteger(r))
       return li < ivalue(r);  /* both are integers */
+#if LUA_ENABLE_FLOAT
     else  /* 'l' is int and 'r' is float */
       return LTintfloat(li, fltvalue(r));  /* l < r ? */
+#endif
   }
+#if LUA_ENABLE_FLOAT
   else {
     lua_Number lf = fltvalue(l);  /* 'l' must be float */
     if (ttisfloat(r))
@@ -493,6 +499,7 @@ l_sinline int LTnum (const TValue *l, const TValue *r) {
     else  /* 'l' is float and 'r' is int */
       return LTfloatint(lf, ivalue(r));
   }
+#endif
 }
 
 
@@ -505,9 +512,12 @@ l_sinline int LEnum (const TValue *l, const TValue *r) {
     lua_Integer li = ivalue(l);
     if (ttisinteger(r))
       return li <= ivalue(r);  /* both are integers */
+#if LUA_ENABLE_FLOAT
     else  /* 'l' is int and 'r' is float */
       return LEintfloat(li, fltvalue(r));  /* l <= r ? */
+#endif
   }
+#if LUA_ENABLE_FLOAT
   else {
     lua_Number lf = fltvalue(l);  /* 'l' must be float */
     if (ttisfloat(r))
@@ -515,6 +525,7 @@ l_sinline int LEnum (const TValue *l, const TValue *r) {
     else  /* 'l' is float and 'r' is int */
       return LEfloatint(lf, ivalue(r));
   }
+#endif
 }
 
 
@@ -1632,8 +1643,10 @@ void luaV_execute (lua_State *L, CallInfo *ci) {
         int im = GETARG_sB(i);
         if (ttisinteger(s2v(ra)))
           cond = (ivalue(s2v(ra)) == im);
+#if LUA_ENABLE_FLOAT
         else if (ttisfloat(s2v(ra)))
           cond = luai_numeq(fltvalue(s2v(ra)), cast_num(im));
+#endif
         else
           cond = 0;  /* other types cannot be equal to a number */
         docondjump();

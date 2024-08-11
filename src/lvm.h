@@ -46,6 +46,18 @@ typedef enum {
   F2Iceil    /* takes the ceil of the number */
 } F2Imod;
 
+/* convert an object to an integer (including string coercion) */
+#define tointeger(o,i) \
+  (l_likely(ttisinteger(o)) ? (*(i) = ivalue(o), 1) \
+                          : luaV_tointeger(o,i,LUA_FLOORN2I))
+
+
+/* convert an object to an integer (without string coercion) */
+#define tointegerns(o,i) \
+  (l_likely(ttisinteger(o)) ? (*(i) = ivalue(o), 1) \
+                          : luaV_tointegerns(o,i,LUA_FLOORN2I))
+
+#if LUA_ENABLE_FLOAT
 
 /* convert an object to a float (including string coercion) */
 #define tonumber(o,n) \
@@ -57,17 +69,12 @@ typedef enum {
 	(ttisfloat(o) ? ((n) = fltvalue(o), 1) : \
 	(ttisinteger(o) ? ((n) = cast_num(ivalue(o)), 1) : 0))
 
+#else
 
-/* convert an object to an integer (including string coercion) */
-#define tointeger(o,i) \
-  (l_likely(ttisinteger(o)) ? (*(i) = ivalue(o), 1) \
-                          : luaV_tointeger(o,i,LUA_FLOORN2I))
+#define tonumber(o,n) tointeger(o,cast(lua_Integer*,n))
+#define tonumberns(o,n) (ttisinteger(o) ? ((n) = cast_num(ivalue(o)), 1) : 0)
 
-
-/* convert an object to an integer (without string coercion) */
-#define tointegerns(o,i) \
-  (l_likely(ttisinteger(o)) ? (*(i) = ivalue(o), 1) \
-                          : luaV_tointegerns(o,i,LUA_FLOORN2I))
+#endif
 
 
 #define intop(op,v1,v2) l_castU2S(l_castS2U(v1) op l_castS2U(v2))

@@ -336,11 +336,19 @@ typedef struct GCObject {
 
 #define nvalue(o)	check_exp(ttisnumber(o), \
 	(ttisinteger(o) ? cast_num(ivalue(o)) : fltvalue(o)))
-#define fltvalue(o)	check_exp(ttisfloat(o), val_(o).n)
 #define ivalue(o)	check_exp(ttisinteger(o), val_(o).i)
+#if LUA_ENABLE_FLOAT
+#define fltvalue(o)	check_exp(ttisfloat(o), val_(o).n)
+#else
+#define fltvalue(o) ivalue(o)
+#endif
 
-#define fltvalueraw(v)	((v).n)
 #define ivalueraw(v)	((v).i)
+#if LUA_ENABLE_FLOAT
+#define fltvalueraw(v)	((v).n)
+#else
+#define fltvalueraw(v)	ivalueraw(v)
+#endif
 
 #define setivalue(obj,x) \
   { TValue *io=(obj); val_(io).i=(x); settt_(io, LUA_VNUMINT); }
