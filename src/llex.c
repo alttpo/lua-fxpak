@@ -15,6 +15,8 @@
 
 #include "lua.h"
 
+#if LUA_ENABLE_PARSER
+
 #include "lctype.h"
 #include "ldebug.h"
 #include "ldo.h"
@@ -579,3 +581,4 @@ int luaX_lookahead (LexState *ls) {
   return ls->lookahead.token;
 }
 
+#endif /* LUA_ENABLE_PARSER */

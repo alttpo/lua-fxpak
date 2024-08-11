@@ -499,6 +499,8 @@ l_sinline int LTnum (const TValue *l, const TValue *r) {
     else  /* 'l' is float and 'r' is int */
       return LTfloatint(lf, ivalue(r));
   }
+#else
+  return 0;
 #endif
 }
 

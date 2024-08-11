@@ -998,8 +998,13 @@ static void f_parser (lua_State *L, void *ud) {
     cl = luaU_undump(L, p->z, p->name);
   }
   else {
+#if LUA_ENABLE_PARSER
     checkmode(L, p->mode, "text");
     cl = luaY_parser(L, p->z, &p->buff, &p->dyd, p->name, c);
+#else
+    luaO_pushfstring(L, "LUA_ENABLE_PARSER == 0");
+    return;
+#endif
   }
   lua_assert(cl->nupvalues == cl->p->sizeupvalues);
   luaF_initupvals(L, cl);

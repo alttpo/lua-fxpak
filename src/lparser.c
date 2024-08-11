@@ -15,6 +15,8 @@
 
 #include "lua.h"
 
+#if LUA_ENABLE_PARSER
+
 #include "lcode.h"
 #include "ldebug.h"
 #include "ldo.h"
@@ -1967,3 +1969,4 @@ LClosure *luaY_parser (lua_State *L, ZIO *z, Mbuffer *buff,
   return cl;  /* closure is on the stack, too */
 }
 
+#endif /* LUA_ENABLE_PARSER */

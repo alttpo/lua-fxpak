@@ -17,6 +17,8 @@
 
 #include "lua.h"
 
+#if LUA_ENABLE_LIB_UTF8
+
 #include "lauxlib.h"
 #include "lualib.h"
 
@@ -289,3 +291,4 @@ LUAMOD_API int luaopen_utf8 (lua_State *L) {
   return 1;
 }
 
+#endif /* LUA_ENABLE_LIB_UTF8 */

@@ -134,22 +134,57 @@
 
 
 /*
+@@ LUA_ENABLE_PARSER enables parser support if value is non-zero.
+*/
+#define LUA_ENABLE_PARSER	0
+
+
+/*
 @@ LUA_ENABLE_LOAD enables lua `load()`, `loadfile()`, `dofile()` functions if value is non-zero.
 */
 #define LUA_ENABLE_LOAD	0
 
 
 /*
-@@ LUA_ENABLE_LIB_IO enables lua `io` base library if value is non-zero.
+@@ LUA_ENABLE_LIB_PACKAGE enables lua 'package' base library if value is non-zero.
+*/
+#define LUA_ENABLE_LIB_PACKAGE	0
+
+
+/*
+@@ LUA_ENABLE_LIB_COROUTINE enables lua 'coroutine' base library if value is non-zero.
+*/
+#define LUA_ENABLE_LIB_COROUTINE	0
+
+
+/*
+@@ LUA_ENABLE_LIB_IO enables lua 'io' base library if value is non-zero.
 */
 #define LUA_ENABLE_LIB_IO	0
 
 
 /*
-@@ LUA_ENABLE_LIB_OS enables lua `os` base library if value is non-zero.
+@@ LUA_ENABLE_LIB_OS enables lua 'os' base library if value is non-zero.
 */
 #define LUA_ENABLE_LIB_OS	0
 
+
+/*
+@@ LUA_ENABLE_LIB_STRING enables lua 'string' base library if value is non-zero.
+*/
+#define LUA_ENABLE_LIB_STRING	0
+
+
+/*
+@@ LUA_ENABLE_LIB_UTF8 enables lua 'utf8' base library if value is non-zero.
+*/
+#define LUA_ENABLE_LIB_UTF8	0
+
+
+/*
+@@ LUA_ENABLE_LIB_DEBUG enables lua 'debug' base library if value is non-zero.
+*/
+#define LUA_ENABLE_LIB_DEBUG	0
 
 /*
 @@ LUA_C89_NUMBERS ensures that Lua uses the largest types available for

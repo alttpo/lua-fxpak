@@ -20,6 +20,8 @@
 
 #include "lua.h"
 
+#if LUA_ENABLE_LIB_PACKAGE
+
 #include "lauxlib.h"
 #include "lualib.h"
 
@@ -756,3 +758,4 @@ LUAMOD_API int luaopen_package (lua_State *L) {
   return 1;  /* return 'package' table */
 }
 
+#endif /* LUA_ENABLE_LIB_PACKAGE */

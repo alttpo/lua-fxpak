@@ -41,8 +41,12 @@
 */
 static const luaL_Reg loadedlibs[] = {
   {LUA_GNAME, luaopen_base},
+#if LUA_ENABLE_LIB_PACKAGE
   {LUA_LOADLIBNAME, luaopen_package},
+#endif
+#if LUA_ENABLE_LIB_COROUTINE
   {LUA_COLIBNAME, luaopen_coroutine},
+#endif
   {LUA_TABLIBNAME, luaopen_table},
 #if LUA_ENABLE_LIB_IO
   {LUA_IOLIBNAME, luaopen_io},
@@ -50,12 +54,18 @@ static const luaL_Reg loadedlibs[] = {
 #if LUA_ENABLE_LIB_OS
   {LUA_OSLIBNAME, luaopen_os},
 #endif
+#if LUA_ENABLE_LIB_STRING
   {LUA_STRLIBNAME, luaopen_string},
+#endif
 #if LUA_ENABLE_FLOAT
   {LUA_MATHLIBNAME, luaopen_math},
 #endif
+#if LUA_ENABLE_LIB_UTF8
   {LUA_UTF8LIBNAME, luaopen_utf8},
+#endif
+#if LUA_ENABLE_LIB_DEBUG
   {LUA_DBLIBNAME, luaopen_debug},
+#endif
   {NULL, NULL}
 };
 
