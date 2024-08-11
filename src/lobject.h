@@ -321,15 +321,17 @@ typedef struct GCObject {
 
 /* Variant tags for numbers */
 #define LUA_VNUMINT	makevariant(LUA_TNUMBER, 0)  /* integer numbers */
+#if LUA_ENABLE_FLOAT
 #define LUA_VNUMFLT	makevariant(LUA_TNUMBER, 1)  /* float numbers */
+#endif
 
 #define ttisnumber(o)		checktype((o), LUA_TNUMBER)
 #if LUA_ENABLE_FLOAT
 #define ttisfloat(o)		checktag((o), LUA_VNUMFLT)
 #define ttisinteger(o)		checktag((o), LUA_VNUMINT)
 #else
-#define ttisfloat(o)		(0 == 1)
-#define ttisinteger(o)		(0 == 0)
+#define ttisfloat(o)		checktag((o), LUA_VNUMINT)
+#define ttisinteger(o)		checktag((o), LUA_VNUMINT)
 #endif
 
 #define nvalue(o)	check_exp(ttisnumber(o), \
@@ -340,17 +342,22 @@ typedef struct GCObject {
 #define fltvalueraw(v)	((v).n)
 #define ivalueraw(v)	((v).i)
 
-#define setfltvalue(obj,x) \
-  { TValue *io=(obj); val_(io).n=(x); settt_(io, LUA_VNUMFLT); }
-
-#define chgfltvalue(obj,x) \
-  { TValue *io=(obj); lua_assert(ttisfloat(io)); val_(io).n=(x); }
-
 #define setivalue(obj,x) \
   { TValue *io=(obj); val_(io).i=(x); settt_(io, LUA_VNUMINT); }
 
 #define chgivalue(obj,x) \
   { TValue *io=(obj); lua_assert(ttisinteger(io)); val_(io).i=(x); }
+
+#if LUA_ENABLE_FLOAT
+#define setfltvalue(obj,x) \
+  { TValue *io=(obj); val_(io).n=(x); settt_(io, LUA_VNUMFLT); }
+
+#define chgfltvalue(obj,x) \
+  { TValue *io=(obj); lua_assert(ttisfloat(io)); val_(io).n=(x); }
+#else
+#define setfltvalue(obj,x) setivalue(obj,x)
+#define chgfltvalue(obj,x) chgivalue(obj,x)
+#endif
 
 /* }================================================================== */
 

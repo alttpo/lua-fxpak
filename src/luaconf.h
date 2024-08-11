@@ -525,7 +525,7 @@
 
 #define LUA_NUMBER	LUA_INTEGER
 
-#define l_floatatt(n)		(0)	/* TODO */
+#define l_floatatt(n)		(FLT_##n)	/* TODO */
 
 #define LUAI_UACNUMBER	LUA_INTEGER
 
@@ -683,7 +683,7 @@
 	((void)L, l_sprintf(b,sz,f,(LUAI_UACNUMBER)(n)))
 #else
 #define lua_number2strx(L,b,sz,f,n)  \
-	((void)L, l_sprintf(b,sz,"%x",(LUAI_UACINT)(n)))
+	((void)L, l_sprintf(b,sz,"0x%x",(LUAI_UACINT)(n)))
 #endif
 #endif
 

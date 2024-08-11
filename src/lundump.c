@@ -172,9 +172,11 @@ static void loadConstants (LoadState *S, Proto *f) {
       case LUA_VTRUE:
         setbtvalue(o);
         break;
+#if LUA_ENABLE_FLOAT
       case LUA_VNUMFLT:
         setfltvalue(o, loadNumber(S));
         break;
+#endif
       case LUA_VNUMINT:
         setivalue(o, loadInteger(S));
         break;

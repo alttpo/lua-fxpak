@@ -154,10 +154,12 @@ static Node *mainpositionTV (const Table *t, const TValue *key) {
       lua_Integer i = ivalue(key);
       return hashint(t, i);
     }
+#if LUA_ENABLE_FLOAT
     case LUA_VNUMFLT: {
       lua_Number n = fltvalue(key);
       return hashmod(t, l_hashfloat(n));
     }
+#endif
     case LUA_VSHRSTR: {
       TString *ts = tsvalue(key);
       return hashstr(t, ts);
@@ -222,8 +224,10 @@ static int equalkey (const TValue *k1, const Node *n2, int deadok) {
       return 1;
     case LUA_VNUMINT:
       return (ivalue(k1) == keyival(n2));
+#if LUA_ENABLE_FLOAT
     case LUA_VNUMFLT:
       return luai_numeq(fltvalue(k1), fltvalueraw(keyval(n2)));
+#endif
     case LUA_VLIGHTUSERDATA:
       return pvalue(k1) == pvalueraw(keyval(n2));
     case LUA_VLCF:
@@ -805,12 +809,14 @@ const TValue *luaH_get (Table *t, const TValue *key) {
     case LUA_VSHRSTR: return luaH_getshortstr(t, tsvalue(key));
     case LUA_VNUMINT: return luaH_getint(t, ivalue(key));
     case LUA_VNIL: return &absentkey;
+#if LUA_ENABLE_FLOAT
     case LUA_VNUMFLT: {
       lua_Integer k;
       if (luaV_flttointeger(fltvalue(key), &k, F2Ieq)) /* integral index? */
         return luaH_getint(t, k);  /* use specialized version */
       /* else... */
     }  /* FALLTHROUGH */
+#endif
     default:
       return getgeneric(t, key, 0);
   }

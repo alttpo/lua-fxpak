@@ -60,9 +60,11 @@ static int tonumeral (const expdesc *e, TValue *v) {
     case VKINT:
       if (v) setivalue(v, e->u.ival);
       return 1;
+#if LUA_ENABLE_FLOAT
     case VKFLT:
       if (v) setfltvalue(v, e->u.nval);
       return 1;
+#endif
     default: return 0;
   }
 }
@@ -694,9 +696,11 @@ static void const2exp (TValue *v, expdesc *e) {
     case LUA_VNUMINT:
       e->k = VKINT; e->u.ival = ivalue(v);
       break;
+#if LUA_ENABLE_FLOAT
     case LUA_VNUMFLT:
       e->k = VKFLT; e->u.nval = fltvalue(v);
       break;
+#endif
     case LUA_VFALSE:
       e->k = VFALSE;
       break;
@@ -845,10 +849,12 @@ static void discharge2reg (FuncState *fs, expdesc *e, int reg) {
       luaK_codek(fs, reg, e->u.info);
       break;
     }
+#if LUA_ENABLE_FLOAT
     case VKFLT: {
       luaK_float(fs, reg, e->u.nval);
       break;
     }
+#endif
     case VKINT: {
       luaK_int(fs, reg, e->u.ival);
       break;
@@ -1004,7 +1010,9 @@ static int luaK_exp2K (FuncState *fs, expdesc *e) {
       case VFALSE: info = boolF(fs); break;
       case VNIL: info = nilK(fs); break;
       case VKINT: info = luaK_intK(fs, e->u.ival); break;
+#if LUA_ENABLE_FLOAT
       case VKFLT: info = luaK_numberK(fs, e->u.nval); break;
+#endif
       case VKSTR: info = stringK(fs, e->u.strval); break;
       case VK: info = e->u.info; break;
       default: return 0;  /* not a constant */
@@ -1140,7 +1148,11 @@ void luaK_goiftrue (FuncState *fs, expdesc *e) {
       pc = e->u.info;  /* save jump position */
       break;
     }
-    case VK: case VKFLT: case VKINT: case VKSTR: case VTRUE: {
+    case VK:
+#if LUA_ENABLE_FLOAT
+    case VKFLT:
+#endif
+    case VKINT: case VKSTR: case VTRUE: {
       pc = NO_JUMP;  /* always true; do nothing */
       break;
     }
@@ -1190,7 +1202,11 @@ static void codenot (FuncState *fs, expdesc *e) {
       e->k = VTRUE;  /* true == not nil == not false */
       break;
     }
-    case VK: case VKFLT: case VKINT: case VKSTR: case VTRUE: {
+    case VK:
+#if LUA_ENABLE_FLOAT
+    case VKFLT:
+#endif
+    case VKINT: case VKSTR: case VTRUE: {
       e->k = VFALSE;  /* false == not "x" == not 0.5 == not 1 == not true */
       break;
     }
@@ -1257,8 +1273,10 @@ static int isSCnumber (expdesc *e, int *pi, int *isfloat) {
   lua_Integer i;
   if (e->k == VKINT)
     i = e->u.ival;
+#if LUA_ENABLE_FLOAT
   else if (e->k == VKFLT && luaV_flttointeger(e->u.nval, &i, F2Ieq))
     *isfloat = 1;
+#endif
   else
     return 0;  /* not a number */
   if (!hasjumps(e) && fitsC(i)) {
@@ -1343,6 +1361,7 @@ static int constfolding (FuncState *fs, int op, expdesc *e1,
     e1->k = VKINT;
     e1->u.ival = ivalue(&res);
   }
+#if LUA_ENABLE_FLOAT
   else {  /* folds neither NaN nor 0.0 (to avoid problems with -0.0) */
     lua_Number n = fltvalue(&res);
     if (luai_numisnan(n) || n == 0)
@@ -1350,6 +1369,11 @@ static int constfolding (FuncState *fs, int op, expdesc *e1,
     e1->k = VKFLT;
     e1->u.nval = n;
   }
+#else
+  else {
+    return 0;
+  }
+#endif
   return 1;
 }
 
@@ -1587,7 +1611,11 @@ static void codeeq (FuncState *fs, BinOpr opr, expdesc *e1, expdesc *e2) {
   int isfloat = 0;  /* not needed here, but kept for symmetry */
   OpCode op;
   if (e1->k != VNONRELOC) {
-    lua_assert(e1->k == VK || e1->k == VKINT || e1->k == VKFLT);
+    lua_assert(e1->k == VK || e1->k == VKINT
+#if LUA_ENABLE_FLOAT
+     || e1->k == VKFLT
+#endif
+     );
     swapexps(e1, e2);
   }
   r1 = luaK_exp2anyreg(fs, e1);  /* 1st expression must be in register */

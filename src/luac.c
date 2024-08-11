@@ -274,9 +274,11 @@ static void PrintType(const Proto* f, int i)
   case LUA_VTRUE:
 	printf("B");
 	break;
+#if LUA_ENABLE_FLOAT
   case LUA_VNUMFLT:
 	printf("F");
 	break;
+#endif
   case LUA_VNUMINT:
 	printf("I");
 	break;
@@ -305,6 +307,7 @@ static void PrintConstant(const Proto* f, int i)
   case LUA_VTRUE:
 	printf("true");
 	break;
+#if LUA_ENABLE_FLOAT
   case LUA_VNUMFLT:
 	{
 	char buff[100];
@@ -313,6 +316,7 @@ static void PrintConstant(const Proto* f, int i)
 	if (buff[strspn(buff,"-0123456789")]=='\0') printf(".0");
 	break;
 	}
+#endif
   case LUA_VNUMINT:
 	printf(LUA_INTEGER_FMT,ivalue(o));
 	break;

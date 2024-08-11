@@ -1141,11 +1141,13 @@ static void simpleexp (LexState *ls, expdesc *v) {
   /* simpleexp -> FLT | INT | STRING | NIL | TRUE | FALSE | ... |
                   constructor | FUNCTION body | suffixedexp */
   switch (ls->t.token) {
+#if LUA_ENABLE_FLOAT
     case TK_FLT: {
       init_exp(v, VKFLT, 0);
       v->u.nval = ls->t.seminfo.r;
       break;
     }
+#endif
     case TK_INT: {
       init_exp(v, VKINT, 0);
       v->u.ival = ls->t.seminfo.i;

@@ -118,9 +118,11 @@ static void dumpConstants (DumpState *D, const Proto *f) {
     int tt = ttypetag(o);
     dumpByte(D, tt);
     switch (tt) {
+#if LUA_ENABLE_FLOAT
       case LUA_VNUMFLT:
         dumpNumber(D, fltvalue(o));
         break;
+#endif
       case LUA_VNUMINT:
         dumpInteger(D, ivalue(o));
         break;
